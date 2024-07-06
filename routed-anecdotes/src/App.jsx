@@ -128,7 +128,17 @@ const CreateNew = (props) => {
             onChange={info.onChange}
           />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button
+          type="button"
+          onClick={() => {
+            content.reset();
+            author.reset();
+            info.reset();
+          }}
+        >
+          reset
+        </button>
       </form>
     </div>
   );
