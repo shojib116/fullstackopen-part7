@@ -82,9 +82,9 @@ const Footer = () => (
 const CreateNew = (props) => {
   const navigate = useNavigate();
 
-  const content = uesField("text");
-  const author = uesField("text");
-  const info = uesField("text");
+  const { reset: contentReset, ...contentInputProps } = uesField("text");
+  const { reset: authorReset, ...authorInputProps } = uesField("text");
+  const { reset: infoReset, ...infoInputProps } = uesField("text");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -103,38 +103,23 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            type={content.type}
-            value={content.value}
-            onChange={content.onChange}
-          />
+          <input name="content" {...contentInputProps} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            type={author.type}
-            value={author.value}
-            onChange={author.onChange}
-          />
+          <input name="author" {...authorInputProps} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            type={info.type}
-            value={info.value}
-            onChange={info.onChange}
-          />
+          <input name="info" {...infoInputProps} />
         </div>
         <button type="submit">create</button>
         <button
           type="button"
           onClick={() => {
-            content.reset();
-            author.reset();
-            info.reset();
+            contentReset();
+            authorReset();
+            infoReset();
           }}
         >
           reset
