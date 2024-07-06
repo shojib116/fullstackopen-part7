@@ -15,10 +15,30 @@ const useField = (type) => {
   };
 };
 
+const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api/name";
+
 const useCountry = (name) => {
   const [country, setCountry] = useState(null);
 
-  useEffect(() => {});
+  useEffect(() => {
+    if (!name) return;
+    axios
+      .get(`${baseUrl}/${name}`)
+      .then((res) =>
+        setCountry({
+          found: true,
+          data: {
+            name: res.data.name.common,
+            capital: res.data.capital[0],
+            population: res.data.population,
+            flag: res.data.flags.png,
+          },
+        })
+      )
+      .catch((error) => {
+        if (error.response.status === 404) setCountry({ found: false });
+      });
+  }, [name]);
 
   return country;
 };
