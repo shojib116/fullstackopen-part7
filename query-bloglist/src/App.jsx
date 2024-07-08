@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Routes, Route } from "react-router-dom";
 import loginService from "./services/login";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
@@ -10,11 +11,22 @@ import BlogList from "./components/BlogList";
 import notificationHandler from "./utils/notificationHandler";
 import { useUserData, useUserDispatch } from "./context/UserContext";
 import { clearUser, setUser } from "./reducers/userReducer";
+import UsersList from "./components/UsersList.jsx";
+import { useQuery } from "@tanstack/react-query";
+import userService from "./services/users";
 
 const App = () => {
   const user = useUserData();
   const notificationDispatch = useNotificationDispatch();
   const userDispatch = useUserDispatch();
+  const {
+    data: users,
+    isLoading,
+    isSuccess,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: userService.getAll,
+  });
 
   const blogFormRef = useRef();
 
@@ -72,10 +84,29 @@ const App = () => {
         {user.name} logged in{" "}
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
-      <Togglable buttonLabel="create new" ref={blogFormRef}>
-        <NewBlogForm formRef={blogFormRef} />
-      </Togglable>
-      <BlogList />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Togglable buttonLabel="create new" ref={blogFormRef}>
+                <NewBlogForm formRef={blogFormRef} />
+              </Togglable>
+              <BlogList />
+            </>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <UsersList
+              users={users}
+              isLoading={isLoading}
+              isSuccess={isSuccess}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 };
