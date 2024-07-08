@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import notificationHandler from "../utils/notificationHandler";
-import { useNotificationDispatch } from "../NotificationContext";
+import { useNotificationDispatch } from "../context/NotificationContext";
+import { useUserData } from "../context/UserContext";
 
-const NewBlogForm = ({ formRef, user }) => {
+const NewBlogForm = ({ formRef }) => {
+  const user = useUserData();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");

@@ -2,9 +2,11 @@ import { useState } from "react";
 // import PropTypes from "prop-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
+import { useUserData } from "../context/UserContext";
 
-const Blog = ({ blog, username }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const user = useUserData();
 
   const queryClient = useQueryClient();
   const likesMutation = useMutation({
@@ -74,7 +76,7 @@ const Blog = ({ blog, username }) => {
           <br />
           <span>{blog.user.name}</span>
           <br />
-          {username === blog.user.username && (
+          {user.username === blog.user.username && (
             <input type="button" value="remove" onClick={handleDeletion} />
           )}
         </div>

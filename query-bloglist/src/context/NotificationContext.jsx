@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
 import notificationReducer, {
   initialState,
-} from "./reducers/notificationReducer";
+} from "../reducers/notificationReducer";
 
 const NotificationContext = createContext();
 

@@ -5,13 +5,16 @@ import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-import { useNotificationDispatch } from "./NotificationContext";
+import { useNotificationDispatch } from "./context/NotificationContext";
 import BlogList from "./components/BlogList";
 import notificationHandler from "./utils/notificationHandler";
+import { useUserData, useUserDispatch } from "./context/UserContext";
+import { clearUser, setUser } from "./reducers/userReducer";
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const user = useUserData();
   const notificationDispatch = useNotificationDispatch();
+  const userDispatch = useUserDispatch();
 
   const blogFormRef = useRef();
 
@@ -20,7 +23,7 @@ const App = () => {
     if (loggedInUser) {
       const user = JSON.parse(loggedInUser);
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch(setUser(user));
     }
   }, []);
 
@@ -29,7 +32,7 @@ const App = () => {
       const user = await loginService.login(userObject);
       window.localStorage.setItem("user", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch(setUser(user));
       notificationHandler(
         notificationDispatch,
         `logged in as ${user.name}`,
@@ -47,7 +50,7 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault();
 
-    setUser(null);
+    userDispatch(clearUser());
     window.localStorage.removeItem("user");
   };
 
@@ -70,9 +73,9 @@ const App = () => {
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
       <Togglable buttonLabel="create new" ref={blogFormRef}>
-        <NewBlogForm formRef={blogFormRef} user={user} />
+        <NewBlogForm formRef={blogFormRef} />
       </Togglable>
-      <BlogList user={user} />
+      <BlogList />
     </div>
   );
 };

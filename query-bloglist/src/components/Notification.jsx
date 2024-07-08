@@ -1,5 +1,5 @@
 import "../index.css";
-import { useNotificationValue } from "../NotificationContext";
+import { useNotificationValue } from "../context/NotificationContext";
 
 const Notification = ({ message, status }) => {
   const notification = useNotificationValue();
