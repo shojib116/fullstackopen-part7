@@ -1,7 +1,10 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { deleteBlog, increaseLikes } from "../reducers/blogReducer";
 
-const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
+const Blog = ({ blog, username }) => {
+  const disptach = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
 
   const handleLikes = async () => {
@@ -11,13 +14,15 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
+      id: blog.id,
     };
-    await increaseLikes(updatedBlog, blog.id);
+
+    disptach(increaseLikes(updatedBlog));
   };
 
   const handleDeletion = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await deleteBlog(blog.id);
+      disptach(deleteBlog(blog.id));
     }
   };
 
@@ -58,11 +63,11 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
   );
 };
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  increaseLikes: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-};
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   increaseLikes: PropTypes.func.isRequired,
+//   deleteBlog: PropTypes.func.isRequired,
+//   username: PropTypes.string.isRequired,
+// };
 
 export default Blog;

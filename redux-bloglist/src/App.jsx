@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
 import loginService from "./services/login";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
@@ -14,7 +13,6 @@ import BlogList from "./components/BlogList";
 
 const App = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
   const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
@@ -35,30 +33,6 @@ const App = () => {
   const createNew = async (blog) => {
     blogFormRef.current.toggleVisibility();
     dispatch(createBlog(blog, user));
-  };
-
-  const increaseLikes = async (updatedBlog, blogId) => {
-    try {
-      const response = await blogService.updateLikes(updatedBlog, blogId);
-      setBlogs(
-        blogs.map((blog) => {
-          if (blog.id === response.id)
-            return { ...blog, likes: response.likes };
-          return blog;
-        })
-      );
-    } catch (error) {
-      dispatch(setNotification(error.response.data.error, "error"));
-    }
-  };
-
-  const deleteBlog = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId);
-      setBlogs(blogs.filter((blog) => blog.id !== blogId));
-    } catch (error) {
-      dispatch(setNotification(error.response.data.error, "error"));
-    }
   };
 
   const handleLogin = async (userObject) => {
@@ -101,11 +75,7 @@ const App = () => {
       <Togglable buttonLabel="create new" ref={blogFormRef}>
         <NewBlogForm createNew={createNew} />
       </Togglable>
-      <BlogList
-        increaseLikes={increaseLikes}
-        deleteBlog={deleteBlog}
-        user={user}
-      />
+      <BlogList user={user} />
     </div>
   );
 };
