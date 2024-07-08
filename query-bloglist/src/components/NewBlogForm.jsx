@@ -1,15 +1,52 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import blogService from "../services/blogs";
+import notificationHandler from "../utils/notificationHandler";
+import { useNotificationDispatch } from "../NotificationContext";
 
-const NewBlogForm = ({ createNew }) => {
+const NewBlogForm = ({ formRef, user }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const notificationDispatch = useNotificationDispatch();
+
+  const queryClient = useQueryClient();
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"]);
+      const createdBy = {
+        username: user.username,
+        name: user.name,
+        id: newBlog.user,
+      };
+      queryClient.setQueryData(
+        ["blogs"],
+        blogs.concat({ ...newBlog, user: createdBy })
+      );
+      notificationHandler(
+        notificationDispatch,
+        `a new blog ${newBlog.title} by ${newBlog.author} added`,
+        "success"
+      );
+    },
+    onError: (error) => {
+      notificationHandler(
+        notificationDispatch,
+        error.response.data.error,
+        "error"
+      );
+    },
+  });
 
   const handleCreateNew = async (event) => {
     event.preventDefault();
 
-    await createNew({ title, author, url });
+    formRef.current.toggleVisibility();
+
+    newBlogMutation.mutate({ title, author, url });
 
     setTitle("");
     setAuthor("");
@@ -54,8 +91,8 @@ const NewBlogForm = ({ createNew }) => {
   );
 };
 
-NewBlogForm.propTypes = {
-  createNew: PropTypes.func.isRequired,
-};
+// NewBlogForm.propTypes = {
+//   createNew: PropTypes.func.isRequired,
+// };
 
 export default NewBlogForm;
