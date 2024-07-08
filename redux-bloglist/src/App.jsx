@@ -6,14 +6,11 @@ import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import setNotification from "./utils/notification_helper";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({
-    message: null,
-    status: null,
-  });
 
   const blogFormRef = useRef();
 
@@ -32,12 +29,6 @@ const App = () => {
     }
   }, []);
 
-  const discardNotification = () => {
-    setTimeout(() => {
-      setNotification({ message: null, status: null });
-    }, 5000);
-  };
-
   const createNew = async (blog) => {
     blogFormRef.current.toggleVisibility();
 
@@ -54,17 +45,12 @@ const App = () => {
         user: createdBy,
       };
       setBlogs(blogs.concat(newBlog));
-      setNotification({
-        message: `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
-        status: "success",
-      });
-      discardNotification();
+      setNotification(
+        `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
+        "success"
+      );
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        status: "error",
-      });
-      discardNotification();
+      setNotification(error.response.data.error, "error");
     }
   };
 
@@ -79,11 +65,7 @@ const App = () => {
         })
       );
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        status: "error",
-      });
-      discardNotification();
+      setNotification(error.response.data.error, "error");
     }
   };
 
@@ -92,11 +74,7 @@ const App = () => {
       await blogService.deleteBlog(blogId);
       setBlogs(blogs.filter((blog) => blog.id !== blogId));
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        status: "error",
-      });
-      discardNotification();
+      setNotification(error.response.data.error, "error");
     }
   };
 
@@ -106,17 +84,9 @@ const App = () => {
       window.localStorage.setItem("user", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setNotification({
-        message: `logged in as ${user.name}`,
-        status: "success",
-      });
-      discardNotification();
+      setNotification(`logged in as ${user.name}`, "success");
     } catch (error) {
-      setNotification({
-        message: error.response.data.error,
-        status: "error",
-      });
-      discardNotification();
+      setNotification(error.response.data.error, "error");
     }
   };
 
@@ -131,12 +101,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        {notification.message && (
-          <Notification
-            message={notification.message}
-            status={notification.status}
-          />
-        )}
+        <Notification />
         <LoginForm handleLogin={handleLogin} />
       </div>
     );
@@ -145,12 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {notification.message && (
-        <Notification
-          message={notification.message}
-          status={notification.status}
-        />
-      )}
+      <Notification />
       <p>
         {user.name} logged in{" "}
         <input type="button" value="logout" onClick={handleLogout} />
