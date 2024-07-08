@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 const NewBlogForm = ({ createNew }) => {
   const [title, setTitle] = useState("");
@@ -54,8 +54,8 @@ const NewBlogForm = ({ createNew }) => {
   );
 };
 
-NewBlogForm.propTypes = {
-  createNew: PropTypes.func.isRequired,
-};
+// NewBlogForm.propTypes = {
+//   createNew: PropTypes.func.isRequired,
+// };
 
 export default NewBlogForm;

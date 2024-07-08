@@ -46,13 +46,13 @@ const notificationSlice = createSlice({
 
 export const { newNotification, clearNotification } = notificationSlice.actions;
 
-export const setNotification = (message, time) => {
+export const setNotification = (message, status) => {
   clearTimeout(setNotification.timout);
   return async (dispatch) => {
-    dispatch(newNotification(message));
+    dispatch(newNotification({ message, status }));
     setNotification.timout = setTimeout(() => {
       dispatch(clearNotification());
-    }, time * 1000);
+    }, 5000);
   };
 };
 
