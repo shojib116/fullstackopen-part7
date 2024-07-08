@@ -1,9 +1,26 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import blogService from "../services/blogs";
 
-const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
+const Blog = ({ blog, username }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const queryClient = useQueryClient();
+  const likesMutation = useMutation({
+    mutationFn: blogService.updateLikes,
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(["blogs"]);
+      queryClient.setQueryData(
+        ["blogs"],
+        blogs.map((blog) =>
+          blog.id !== updatedBlog.id
+            ? blog
+            : { ...blog, likes: updatedBlog.likes }
+        )
+      );
+    },
+  });
   const handleLikes = async () => {
     const updatedBlog = {
       user: blog.user.id,
@@ -11,13 +28,21 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
+      id: blog.id,
     };
-    await increaseLikes(updatedBlog, blog.id);
+    likesMutation.mutate(updatedBlog);
   };
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+    },
+  });
 
   const handleDeletion = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await deleteBlog(blog.id);
+      deleteBlogMutation.mutate(blog.id);
     }
   };
 
@@ -58,11 +83,11 @@ const Blog = ({ blog, increaseLikes, deleteBlog, username }) => {
   );
 };
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  increaseLikes: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-};
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   increaseLikes: PropTypes.func.isRequired,
+//   deleteBlog: PropTypes.func.isRequired,
+//   username: PropTypes.string.isRequired,
+// };
 
 export default Blog;

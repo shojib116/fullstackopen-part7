@@ -24,38 +24,6 @@ const App = () => {
     }
   }, []);
 
-  const increaseLikes = async (updatedBlog, blogId) => {
-    try {
-      const response = await blogService.updateLikes(updatedBlog, blogId);
-      setBlogs(
-        blogs.map((blog) => {
-          if (blog.id === response.id)
-            return { ...blog, likes: response.likes };
-          return blog;
-        })
-      );
-    } catch (error) {
-      notificationHandler(
-        notificationDispatch,
-        error.response.data.error,
-        "error"
-      );
-    }
-  };
-
-  const deleteBlog = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId);
-      setBlogs(blogs.filter((blog) => blog.id !== blogId));
-    } catch (error) {
-      notificationHandler(
-        notificationDispatch,
-        error.response.data.error,
-        "error"
-      );
-    }
-  };
-
   const handleLogin = async (userObject) => {
     try {
       const user = await loginService.login(userObject);
@@ -104,11 +72,7 @@ const App = () => {
       <Togglable buttonLabel="create new" ref={blogFormRef}>
         <NewBlogForm formRef={blogFormRef} user={user} />
       </Togglable>
-      <BlogList
-        increaseLikes={increaseLikes}
-        deleteBlog={deleteBlog}
-        user={user}
-      />
+      <BlogList user={user} />
     </div>
   );
 };
