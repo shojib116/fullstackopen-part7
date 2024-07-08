@@ -1,10 +1,11 @@
 import { useState } from "react";
 // import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteBlog, increaseLikes } from "../reducers/blogReducer";
 
-const Blog = ({ blog, username }) => {
+const Blog = ({ blog }) => {
   const disptach = useDispatch();
+  const user = useSelector((state) => state.user);
   const [showDetails, setShowDetails] = useState(false);
 
   const handleLikes = async () => {
@@ -54,7 +55,7 @@ const Blog = ({ blog, username }) => {
           <br />
           <span>{blog.user.name}</span>
           <br />
-          {username === blog.user.username && (
+          {user.username === blog.user.username && (
             <input type="button" value="remove" onClick={handleDeletion} />
           )}
         </div>

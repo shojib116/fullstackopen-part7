@@ -1,33 +1,22 @@
-import { useState, useEffect, useRef } from "react";
-import loginService from "./services/login";
-import blogService from "./services/blogs";
+import { useEffect, useRef } from "react";
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
-// import setNotification from "./utils/notification_helper";
-import { setNotification } from "./reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { createBlog, initializeBlogs } from "./reducers/blogReducer";
 import BlogList from "./components/BlogList";
+import { initializeUser, logoutUser } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
 
   const blogFormRef = useRef();
 
   useEffect(() => {
+    dispatch(initializeUser());
     dispatch(initializeBlogs());
-  }, []);
-
-  useEffect(() => {
-    const loggedInUser = window.localStorage.getItem("user");
-    if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
-      blogService.setToken(user.token);
-      setUser(user);
-    }
   }, []);
 
   const createNew = async (blog) => {
@@ -35,23 +24,10 @@ const App = () => {
     dispatch(createBlog(blog, user));
   };
 
-  const handleLogin = async (userObject) => {
-    try {
-      const user = await loginService.login(userObject);
-      window.localStorage.setItem("user", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      dispatch(setNotification(`logged in as ${user.name}`, "success"));
-    } catch (error) {
-      dispatch(setNotification(error.response.data.error, "error"));
-    }
-  };
-
   const handleLogout = (event) => {
     event.preventDefault();
 
-    setUser(null);
-    window.localStorage.removeItem("user");
+    dispatch(logoutUser());
   };
 
   if (user === null) {
@@ -59,7 +35,7 @@ const App = () => {
       <div>
         <h2>log in to application</h2>
         <Notification />
-        <LoginForm handleLogin={handleLogin} />
+        <LoginForm />
       </div>
     );
   }
@@ -75,7 +51,7 @@ const App = () => {
       <Togglable buttonLabel="create new" ref={blogFormRef}>
         <NewBlogForm createNew={createNew} />
       </Togglable>
-      <BlogList user={user} />
+      <BlogList />
     </div>
   );
 };
