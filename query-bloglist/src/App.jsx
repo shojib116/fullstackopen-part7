@@ -15,6 +15,7 @@ import UsersList from "./components/UsersList";
 import User from "./components/User";
 import { useQuery } from "@tanstack/react-query";
 import userService from "./services/users";
+import Blog from "./components/Blog";
 
 const App = () => {
   const user = useUserData();
@@ -35,6 +36,7 @@ const App = () => {
   const routedUser =
     match && isSuccess ? users.find((u) => u.id === match.params.id) : null;
 
+  const blogMatch = useMatch("/blogs/:id");
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("user");
     if (loggedInUser) {
@@ -112,6 +114,7 @@ const App = () => {
           }
         />
         <Route path="/users/:id" element={<User user={routedUser} />} />
+        <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
     </div>
   );
