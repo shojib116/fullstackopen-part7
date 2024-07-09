@@ -1,6 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import userService from "../services/users";
 
-const UsersList = ({ users, isLoading, isSuccess }) => {
+const UsersList = () => {
+  const {
+    data: users,
+    isLoading,
+    isSuccess,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: userService.getAll,
+  });
   return (
     <div>
       <h2>Users</h2>

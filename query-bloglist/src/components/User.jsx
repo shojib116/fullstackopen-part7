@@ -1,6 +1,18 @@
-const User = ({ user }) => {
-  if (user === null) return <div>Loading user...</div>;
-  if (user === undefined) return <div>Could not find user...</div>;
+import { useQuery } from "@tanstack/react-query";
+import userService from "../services/users";
+import { useParams } from "react-router-dom";
+
+const User = () => {
+  const id = useParams().id;
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => userService.getById(id),
+  });
+
+  if (isLoading) return <div>Loading user...</div>;
+
+  if (user === null) return <div>Could not find user...</div>;
+
   return (
     <div>
       <h2>{user.name}</h2>
