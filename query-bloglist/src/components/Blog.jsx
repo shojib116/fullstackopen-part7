@@ -57,7 +57,9 @@ const Blog = () => {
         {blog.title} - {blog.author}
       </h2>
 
-      <a href={blog.url}>{blog.url}</a>
+      <a href={blog.url} target="_blank">
+        {blog.url}
+      </a>
       <br />
       <span>
         {blog.likes} likes{" "}
