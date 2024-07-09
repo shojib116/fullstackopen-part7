@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import loginService from "./services/login";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
@@ -12,19 +12,14 @@ import { clearUser, setUser } from "./reducers/userReducer";
 import UsersList from "./components/UsersList";
 import User from "./components/User";
 import Blog from "./components/Blog";
-
-const Menu = () => {
-  return (
-    <>
-      <Link to="/">blogs</Link> <Link to="/users">users</Link>
-    </>
-  );
-};
+import { Box, Container } from "@mui/material";
+import Menu from "./components/Menu";
 
 const App = () => {
   const user = useUserData();
   const notificationDispatch = useNotificationDispatch();
   const userDispatch = useUserDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("user");
@@ -46,6 +41,7 @@ const App = () => {
         `logged in as ${user.name}`,
         "success"
       );
+      navigate("/");
     } catch (error) {
       notificationHandler(
         notificationDispatch,
@@ -64,22 +60,32 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h2>log in to application</h2>
+      <>
         <Notification />
-        <LoginForm handleLogin={handleLogin} />
-      </div>
+        <Container fixed maxWidth="xs" sx={{ textAlign: "center" }}>
+          <Box
+            sx={{
+              padding: "0.5rem 2rem",
+              borderRadius: "10px",
+              maxWidth: "min-content",
+              margin: "auto",
+              boxShadow: "2px 2px 10px #220000",
+            }}
+          >
+            <h2>log in to application</h2>
+            <LoginForm handleLogin={handleLogin} />
+          </Box>
+        </Container>
+      </>
     );
   }
 
   return (
     <div>
-      <div>
-        <Menu /> {user.name} logged in{" "}
-        <input type="button" value="logout" onClick={handleLogout} />
-      </div>
-      <h2>blog app</h2>
       <Notification />
+      <div>
+        <Menu user={user} handleLogout={handleLogout} />
+      </div>
       <Routes>
         <Route path="/" element={<BlogList />} />
         <Route path="/users" element={<UsersList />} />

@@ -1,12 +1,13 @@
 import "../index.css";
 import { useNotificationValue } from "../context/NotificationContext";
+import { Alert } from "@mui/material";
 
-const Notification = ({ message, status }) => {
+const Notification = () => {
   const notification = useNotificationValue();
 
   if (notification.message === null) return null;
 
-  return <div className={notification.status}>{notification.message}</div>;
+  return <Alert severity={notification.status}>{notification.message}</Alert>;
 };
 
 export default Notification;

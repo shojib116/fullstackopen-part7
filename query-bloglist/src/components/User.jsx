@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import userService from "../services/users";
 import { useParams } from "react-router-dom";
+import { Container } from "@mui/material";
 
 const User = () => {
   const id = useParams().id;
@@ -14,7 +15,7 @@ const User = () => {
   if (user === null) return <div>Could not find user...</div>;
 
   return (
-    <div>
+    <Container>
       <h2>{user.name}</h2>
       <h3>added blogs</h3>
       <ul>
@@ -22,7 +23,7 @@ const User = () => {
           <li key={blog.id}>{blog.title}</li>
         ))}
       </ul>
-    </div>
+    </Container>
   );
 };
 

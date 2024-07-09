@@ -5,6 +5,7 @@ import blogService from "../services/blogs";
 import notificationHandler from "../utils/notificationHandler";
 import { useNotificationDispatch } from "../context/NotificationContext";
 import { useUserData } from "../context/UserContext";
+import { Button } from "@mui/material";
 
 const NewBlogForm = ({ formRef }) => {
   const user = useUserData();
@@ -86,7 +87,9 @@ const NewBlogForm = ({ formRef }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
         <br />
-        <input type="submit" value="create" />
+        <Button type="submit" variant="contained" color="success">
+          Create
+        </Button>
         <br />
       </form>
     </>

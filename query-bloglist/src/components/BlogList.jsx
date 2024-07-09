@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NewBlogForm from "./NewBlogForm";
 import Togglable from "./Togglable";
 import { useRef } from "react";
+import { Box, Container } from "@mui/material";
 
 const BlogList = () => {
   const {
@@ -28,21 +29,32 @@ const BlogList = () => {
   };
 
   return (
-    <>
-      <Togglable buttonLabel="create new" ref={blogFormRef}>
-        <NewBlogForm formRef={blogFormRef} />
-      </Togglable>
-      {isSuccess &&
-        blogs
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <div key={blog.id} style={blogStyle}>
-              <Link to={`/blogs/${blog.id}`}>
-                {blog.title} - {blog.author}
-              </Link>
-            </div>
-          ))}
-    </>
+    <Container>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1em",
+          marginTop: "2rem",
+        }}
+      >
+        <Togglable buttonLabel="create new" ref={blogFormRef}>
+          <NewBlogForm formRef={blogFormRef} />
+        </Togglable>
+        <div>
+          {isSuccess &&
+            blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <div key={blog.id} style={blogStyle}>
+                  <Link to={`/blogs/${blog.id}`}>
+                    {blog.title} - {blog.author}
+                  </Link>
+                </div>
+              ))}
+        </div>
+      </Box>
+    </Container>
   );
 };
 

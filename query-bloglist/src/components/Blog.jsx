@@ -4,6 +4,7 @@ import blogService from "../services/blogs";
 import { useUserData } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 import Comments from "./Comments";
+import { Container } from "@mui/material";
 
 const Blog = () => {
   const id = useParams().id;
@@ -52,7 +53,7 @@ const Blog = () => {
   if (blog === null) return <div>Could not find blog...</div>;
 
   return (
-    <div>
+    <Container>
       <h2>
         {blog.title} - {blog.author}
       </h2>
@@ -72,7 +73,7 @@ const Blog = () => {
       {/* {user.username === blog.user.username && (
         <input type="button" value="remove" onClick={handleDeletion} />
       )} */}
-    </div>
+    </Container>
   );
 };
 
