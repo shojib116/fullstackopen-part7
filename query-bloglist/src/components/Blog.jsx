@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import { useUserData } from "../context/UserContext";
 import { useParams } from "react-router-dom";
+import Comments from "./Comments";
 
 const Blog = () => {
   const id = useParams().id;
@@ -65,6 +66,7 @@ const Blog = () => {
       <br />
       <span>added by {blog.user.name}</span>
       <br />
+      <Comments comments={blog.comments} />
       {/* {user.username === blog.user.username && (
         <input type="button" value="remove" onClick={handleDeletion} />
       )} */}
