@@ -1,11 +1,9 @@
-import { useState, useEffect, useRef } from "react";
-import { Routes, Route, useMatch } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import loginService from "./services/login";
 import blogService from "./services/blogs";
 import LoginForm from "./components/LoginForm";
-import NewBlogForm from "./components/NewBlogForm";
 import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
 import { useNotificationDispatch } from "./context/NotificationContext";
 import BlogList from "./components/BlogList";
 import notificationHandler from "./utils/notificationHandler";
@@ -15,12 +13,18 @@ import UsersList from "./components/UsersList";
 import User from "./components/User";
 import Blog from "./components/Blog";
 
+const Menu = () => {
+  return (
+    <>
+      <Link to="/">blogs</Link> <Link to="/users">users</Link>
+    </>
+  );
+};
+
 const App = () => {
   const user = useUserData();
   const notificationDispatch = useNotificationDispatch();
   const userDispatch = useUserDispatch();
-
-  const blogFormRef = useRef();
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("user");
@@ -70,24 +74,14 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>
-        {user.name} logged in{" "}
+      <div>
+        <Menu /> {user.name} logged in{" "}
         <input type="button" value="logout" onClick={handleLogout} />
-      </p>
+      </div>
+      <h2>blog app</h2>
+      <Notification />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Togglable buttonLabel="create new" ref={blogFormRef}>
-                <NewBlogForm formRef={blogFormRef} />
-              </Togglable>
-              <BlogList />
-            </>
-          }
-        />
+        <Route path="/" element={<BlogList />} />
         <Route path="/users" element={<UsersList />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/blogs/:id" element={<Blog />} />

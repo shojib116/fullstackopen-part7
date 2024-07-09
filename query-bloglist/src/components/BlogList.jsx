@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import { Link } from "react-router-dom";
+import NewBlogForm from "./NewBlogForm";
+import Togglable from "./Togglable";
+import { useRef } from "react";
 
 const BlogList = () => {
   const {
@@ -11,6 +14,8 @@ const BlogList = () => {
     queryKey: ["blogs"],
     queryFn: blogService.getAll,
   });
+
+  const blogFormRef = useRef();
 
   if (isLoading) return <div>Loading Blogs...</div>;
 
@@ -24,6 +29,9 @@ const BlogList = () => {
 
   return (
     <>
+      <Togglable buttonLabel="create new" ref={blogFormRef}>
+        <NewBlogForm formRef={blogFormRef} />
+      </Togglable>
       {isSuccess &&
         blogs
           .sort((a, b) => b.likes - a.likes)
